@@ -1,0 +1,38 @@
+# Slitaz+Wildlfy
+#
+#FROM slitaz/slitaz-base
+LABEL maintainer="Willyams Ricardo <yracnet@gmail.com>"
+
+# wildfly environment
+#ENV URL_OPENJDK   http://download.java.net/java/GA/jdk9/9/binaries/openjdk-9_linux-x64_bin.tar.gz
+#ENV URL_WILDLFY   http://download.jboss.org/wildfly/14.0.1.Final/wildfly-14.0.1.Final.tar.gz
+ENV URL_OPENJDK   http://172.23.243.134/openjdk-9_linux-x64_bin.tar.gz
+ENV URL_WILDLFY   http://172.23.243.134/wildfly-14.0.1.Final.tar.gz
+ENV URL_MODULES   http://172.23.243.134/modules.tar.gz
+ENV SERVER_RUN    /server/wildfly
+ENV SERVER_MOD    /server/module
+ENV SERVER_JDK    /server/jdk
+
+# install openjdk & wildfly
+RUN mkdir -p /server/openjdk
+RUN mkdir -p /server/wildfly
+RUN mkdir -p /server/modules
+RUN wget "$URL_OPENJDK" -O openjdk.tar && tar zxf openjdk.tar -C /server/openjdk && rm -f openjdk.tar
+RUN wget "$URL_WILDLFY" -O wildfly.tar && tar zxf wildfly.tar -C /server/wildfly && rm -f wildfly.tar
+RUN wget "$URL_MODULES" -O modules.tar && tar zxf modules.tar -C /server/modules && rm -f modules.tar
+RUN adduser -D -h /server -s /bin/bash server
+RUN chown -R server:server /server
+RUN ls /server
+
+# run jserver
+WORKDIR /server/openjdk
+VOLUME  /server/openjdk
+WORKDIR /server/wildfly
+VOLUME  /server/wildfly
+WORKDIR /server/modules
+VOLUME  /server/modules
+EXPOSE 8080
+EXPOSE 8443
+EXPOSE 9990
+USER server
+CMD ["/server/wildlfy/bin/standalone.sh"]
