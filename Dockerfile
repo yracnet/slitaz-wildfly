@@ -12,7 +12,6 @@ ENV SERVER_JDK    /server/jdk
 
 # install openjdk & wildfly
 RUN echo 'start install openjdk and wildlfy' \
-    && export  \
     && wget -O openjdk.tar "$URL_OPENJDK" \
     && wget -O wildfly.tar "$URL_WILDLFY" \
     && /usr/sbin/useradd --create-home --home-dir /server --shell /bin/bash server \
